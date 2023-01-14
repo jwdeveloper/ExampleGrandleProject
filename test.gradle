@@ -1,0 +1,69 @@
+apply plugin: 'signing'
+apply plugin: 'maven-publish'
+
+if(!project.hasProperty("ossrhUsername")){ //so CI doesn't break
+    project.ext.ossrhUsername = "foo"
+    project.ext.ossrhPassword = "foo"
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            group = 'com.github.jscancella'
+            artifactId = 'bagging'
+            version = project.version
+
+            from components.java
+
+            pom {
+                name = 'bagging'
+                description = 'This is a software library intended to support the creation, manipulation, and validation of "bags" from the bagit specification. It currently supports version 0.93 through 1.0.'
+                url = 'https://github.com/jscancella/bagging'
+                licenses {
+                    license {
+                        name = 'AGPL-V3'
+                        url = 'https://github.com/jscancella/bagging/blob/master/LICENSE.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'blacksmithforlife'
+                        name = 'John Scancella'
+                        email = 'john.scancella@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/jscancella/bagging'
+                    developerConnection = 'scm:git:ssh://github.com/jscancella/bagging'
+                    url = 'https://github.com/jscancella/bagging'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name "OSSRH"
+            url "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}

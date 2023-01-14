@@ -1,54 +1,94 @@
 
 
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
-    }
-}
 
 plugins {
-    id 'java'
     id 'java-library'
     id 'maven-publish'
     id 'signing'
 }
+apply plugin: 'maven-publish'
 
+group 'io.github.jwdeveloper.exaple'
+version '1.1.1'
 
 repositories {
     mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
+sourceCompatibility = 1.8
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation 'org.codehaus.groovy:groovy:3.0.8'
+    testImplementation platform("org.spockframework:spock-bom:2.0-groovy-2.5")
+    testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 }
-
-group 'io.github.jwdeveloper'
-version '1.0-SNAPSHOT'
-
-
 
 test {
     useJUnitPlatform()
 }
 
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
+publishing  {
+    publications{
+        mavenJava(MavenPublication){
 
-apply plugin: 'maven-publish'
+            groupId = 'io.github.jwdeveloper.exaple'
+            artifactId = 'example-library'
+            version = '1.1.1'
+            from components.java
 
-archivesBaseName = 'Example Maven Reposiotry Prject'
-group = "io.github.jwdeveloper.example"
-version = "1.0.0"
+            pom {
+                name = 'example'
+                description = 'Example upload to mave central repository'
+                url = 'https://github.com/jwdeveloper/ExampleGrandleProject'
+                inceptionYear = '2022'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'http://www.opensource.org/licenses/mit-license.php'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'jw_developer'
+                        name = 'JW'
+                        email = 'example@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/jwdeveloper/ExampleGrandleProject'
+                    developerConnection = 'scm:git:ssh://github.com/jwdeveloper/ExampleGrandleProject'
+                    url = 'https://github.com/jwdeveloper/ExampleGrandleProject'
+                }
 
-publishing {
+            }
+        }
+    }
     repositories {
         maven {
-            url "https://oss.sonatype.org/content/repositories/snapshots"
+            name = "OSSRH"
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username = project.properties["ossrhUsername"]
+                password = project.properties["ossrhPassword"]
+            }
         }
     }
 }
 
+signing {
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}

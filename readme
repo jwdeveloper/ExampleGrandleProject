@@ -1,0 +1,23 @@
+example gradle.properties file
+
+
+
+ossrhUsername= USER
+ossrhPassword= PASSWORD
+
+#creating new key: gpg --gen-key
+#exporting public key: gpg --export-secret-keys -o C:\path\secring.gpg
+#gettomg keyID: gpg --list-keys
+#
+# you need to take last 8 Digits of the displayed key
+# for this example KeyID will be 31457922
+#---------------------------------------------
+#pub   ed25519 2023-01-14 [SC] [wygasa: 2025-01-14]
+#      7420B8170063E3D2CD8EB78B44595DD231457922
+#
+#
+
+
+signing.keyId=31457922
+signing.password=example
+signing.secretKeyRingFile= secring.gpg
