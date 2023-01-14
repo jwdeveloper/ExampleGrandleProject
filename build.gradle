@@ -1,22 +1,3 @@
-plugins {
-    id 'java'
-}
-
-group 'io.github.jwdeveloper'
-version '1.0-SNAPSHOT'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-}
-
-test {
-    useJUnitPlatform()
-}
 
 
 buildscript {
@@ -28,51 +9,46 @@ buildscript {
     }
 }
 
-apply plugin: 'com.bmuschko.nexus'
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
 
-archivesBaseName = 'teachUpload-jvm'
-group = "com.yourCompany.package"
-version = "0.1"
 
-modifyPom {
-    project {
-        name 'teachUpload'
-        description 'Teaching how to use gradle.'
-        url 'https://bitbucket.org/objdict/objjson'
-        inceptionYear '2018'
+repositories {
+    mavenCentral()
+}
 
-        scm {
-            url 'https://bitbucket.org/objdict/objjson'
-            connection 'scm:https://bitbucket.org/objdict/objjson.git'
-            developerConnection 'scm:git://bitbucket.org/objdict/objjson.git'
-        }
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
 
-        licenses {
-            license {
-                name 'The Apache Software License, Version 2.0'
-                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                distribution 'repo'
-            }
-        }
+group 'io.github.jwdeveloper'
+version '1.0-SNAPSHOT'
 
-        developers {
-            developer {
-                id 'albertgao'
-                name 'Albert Gao'
-                email 'albert.gao@salect.co.nz'
-            }
+
+
+test {
+    useJUnitPlatform()
+}
+
+
+
+
+apply plugin: 'maven-publish'
+
+archivesBaseName = 'Example Maven Reposiotry Prject'
+group = "io.github.jwdeveloper.example"
+version = "1.0.0"
+
+publishing {
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots"
         }
     }
 }
 
-extraArchive {
-    sources = true
-    tests = true
-    javadoc = true
-}
-
-nexus {
-    sign = true
-    repositoryUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-    snapshotRepositoryUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
-}

@@ -1,4 +1,4 @@
-package io.github.jwdeveloper;
+package io.github.jwdeveloper.example;
 
 public class Main {
     public static void main(String[] args) {
